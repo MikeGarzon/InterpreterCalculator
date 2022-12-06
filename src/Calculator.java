@@ -12,7 +12,8 @@ public class Calculator {
     Context ctx = new Context();
 
     //set the expression to evaluate
-    calc.setExpression("(a+b)*(c-d)");
+    String temp = "(a+b)+(c-d)";
+    calc.setExpression(temp);
 
     //configure the calculator with the
     // Context
@@ -24,7 +25,7 @@ public class Calculator {
                        ", b=" + ctx.getValue("b") +
                        ", c=" + ctx.getValue("c") + 
                        ", d=" + ctx.getValue("d"));
-    System.out.println(" Expression = (a+b)*(c-d)");
+    System.out.println(" Expression = "+ temp);
     System.out.println(" Result = " + calc.evaluate());
   }
 
@@ -35,6 +36,10 @@ public class Calculator {
     operators.put("/","2");
     operators.put("*","2");
     operators.put("(","0");
+
+    //Add priority for new expressions
+    operators.put("^","3");
+    operators.put("%","2");
   }
   public void setContext(Context c) {
     ctx = c;
@@ -65,6 +70,16 @@ public class Calculator {
       return new MultiplyExpression(l, r);
     }
 
+    // Add new operation cases for the new expressions on NewExpressions
+    if (operation.trim().equals("/")) {
+      return new DivisionExpression(l, r);
+    }
+    if (operation.trim().equals("%")) {
+      return new ModuleExpression(l, r);
+    }
+    if (operation.trim().equals("^")) {
+      return new PowerExpression(l, r);
+    }
     return null;
   }
 
@@ -153,10 +168,9 @@ public class Calculator {
   }
 
   private boolean isOperator(String str) {
-    if ((str.equals("+")) || (str.equals("-")) ||
-        (str.equals("*")) || (str.equals("/")))
-      return true;
-    return false;
+    return ((str.equals("+")) || (str.equals("-")) ||
+            (str.equals("*")) || (str.equals("/")) || //Add new operators
+            (str.equals("%")) || (str.equals("^")));
   }
 } // End of class
 
@@ -175,10 +189,10 @@ class Context {
 
   //Values are hardcoded to keep the example simple
   private void initialize() {
-    assign("a",20);
-    assign("b",40);
-    assign("c",30);
-    assign("d",10);
+    assign("a",0);
+    assign("b",0);
+    assign("c",0);
+    assign("d",4);
   }
 
 }
