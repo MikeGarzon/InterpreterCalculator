@@ -1,33 +1,13 @@
-import java.io.*;
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Calculator {
   private String expression;
   private HashMap operators;
   private Context ctx;
-
-  public static void main(String[] args) {
-    Calculator calc = new Calculator();
-    //instantiate the context
-    Context ctx = new Context();
-
-    //set the expression to evaluate
-    String temp = "(a+b)+(c-d)";
-    calc.setExpression(temp);
-
-    //configure the calculator with the
-    // Context
-    calc.setContext(ctx);
-
-    //Display the result
-    System.out.println(" Variable Values: " + 
-                       "a=" + ctx.getValue("a") + 
-                       ", b=" + ctx.getValue("b") +
-                       ", c=" + ctx.getValue("c") + 
-                       ", d=" + ctx.getValue("d"));
-    System.out.println(" Expression = "+ temp);
-    System.out.println(" Result = " + calc.evaluate());
-  }
 
   public Calculator() {
     operators = new HashMap();
@@ -176,6 +156,7 @@ public class Calculator {
 
 class Context {
   private HashMap varList = new HashMap();
+  private Properties p;
   public void assign(String var, int value) {
     varList.put(var, new Integer(value));
   }
@@ -183,16 +164,25 @@ class Context {
     Integer objInt = (Integer) varList.get(var);
     return objInt.intValue();
   }
-  public Context() {
-    initialize();
+  public Context(String s) {
+    initialize(s);
   }
 
-  //Values are hardcoded to keep the example simple
-  private void initialize() {
-    assign("a",0);
-    assign("b",0);
-    assign("c",0);
-    assign("d",4);
-  }
+  private void initialize(String s) {
+    this.varList.clear();
+    this.p = new Properties();
 
+    try {
+      this.p.load(new StringReader(s));
+      Enumeration<Object> keys = this.p.keys();
+
+      while(keys.hasMoreElements()) {
+        Object key = keys.nextElement();
+        this.assign(key.toString(), Integer.parseInt((String)this.p.get(key)));
+      }
+    } catch (IOException var4) {
+      Logger.getLogger(Context.class.getName()).log(Level.SEVERE, (String)null, var4);
+    }
+
+}
 }

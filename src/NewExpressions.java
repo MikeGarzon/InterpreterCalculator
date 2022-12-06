@@ -8,7 +8,6 @@ class ModuleExpression extends NonTerminalExpression{
             System.out.println(" Not valid expression: Division by 0");
             return -99999999;
         }
-        System.out.println(getRightNode().evaluate(c));
         return  getLeftNode().evaluate(c) % getRightNode().evaluate(c);
     }
 }
