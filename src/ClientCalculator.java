@@ -115,7 +115,7 @@ public class ClientCalculator extends JFrame {
     }
 
     public void setResult(String r) {
-        lblResult.setText("Result: " + r);
+        lblResult.setText("Evaluated Expression: " + r);
     }
 
 }
@@ -134,13 +134,14 @@ class ButtonHandler implements ActionListener {
             Calculator calc = new Calculator();
             Context ctx = new Context(objCalculatorManager.getVariables());
 
+
+            //configure the calculator with the context
+            calc.setContext(ctx);
+
             //set the expression to evaluate
             String x = objCalculatorManager.getExpression().replace(" ", "");
             calc.setExpression(x);
 
-            //configure the calculator with the context
-            calc.setContext(ctx);
-            
             objCalculatorManager.setResult(String.valueOf(calc.evaluate()));
         }
     }
